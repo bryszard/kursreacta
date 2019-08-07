@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Clock /> when rendered component with TestRenderer renders properly 1`] = `
+<h2>
+  02:46:40:785
+</h2>
+`;

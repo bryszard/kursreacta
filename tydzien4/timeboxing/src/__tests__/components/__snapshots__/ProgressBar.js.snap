@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ProgressBar /> when rendered with react-test-renderer renders component properly 1`] = `
+<div
+  className="ProgressBar"
+>
+  <div
+    style={
+      Object {
+        "width": "10%",
+      }
+    }
+  />
+</div>
+`;

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Kurs Reacta - Tydzien 2</title>
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <style>
+    .App {
+        font-family: sans-serif;
+    }
+
+    .TimeboxEditor {
+        text-align: right;
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    input {
+        min-width: 60%;
+        margin-left: 20px;
+        font-size: 16px;
+    }
+
+    button {
+        font-size: 16px;
+        margin-left: 10px;
+    }
+
+    .Timebox {
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .Clock {
+        color: orangered;
+    }
+
+    .ProgressBar {
+        border: 1px solid orangered;
+        border-radius: 5px;
+        height: 25px;
+        margin-bottom: 20px;
+        padding: 5px;
+    }
+
+    .ProgressBar > div {
+        height: 100%;
+        background-color: orangered;
+    }
+
+    .inactive {
+        filter: blur(2px) grayscale(1);
+    }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+<script type="text/javascript">
+
+const generateTree = (parentElement, children) => {
+    for(let index in children) {
+        let elementData = children[index];
+        let addedElement = document.createElement(elementData.tag);
+
+        for(let key in elementData) {
+            if(["tag", "text", "children"].includes(key)) {
+                continue;
+            }
+
+            addedElement.setAttribute(key, elementData[key]);
+        }
+
+        if(elementData.text) {
+            addedElement.textContent = elementData.text
+        }
+
+        if(elementData.children) {
+            generateTree(addedElement, elementData.children)
+        }
+
+        parentElement.appendChild(addedElement);
+    }
+};
+
+const rootElement = document.getElementById('root');
+const rootChildren = [
+    {
+        tag: "h1",
+        id: "header",
+        text: "Kurs Reacta - Tydzien 2"
+    },
+    {
+        tag: "hr"
+    },
+    {
+        tag: "div",
+        class: "App",
+        children: [
+            {
+                tag: "div",
+                class: "TimeboxEditor inactive",
+                children: [
+                    {
+                        tag: "label",
+                        text: "Co robisz? ",
+                        children: [
+                            {
+                                tag: "input",
+                                disabled: true,
+                                value: "Uczę się skrótów klawiszowych",
+                                type: "text"
+                            }
+                        ]
+                    },
+                    {
+                        tag: "br"
+                    },
+                    {
+                        tag: "label",
+                        text: "Ile minut? ",
+                        children: [
+                            {
+                                tag: "input",
+                                disabled: true,
+                                value: "25",
+                                type: "number"
+                            }
+                        ]
+                    },
+                    {
+                        tag: "br"
+                    }
+                ]
+            },
+            {
+                tag: "div",
+                class: "Timebox",
+                text: "Liczba przerw: 2",
+                children: [
+                    {
+                        tag: "h1",
+                        text: "Uczę się skrótów klawiszowych"
+                    },
+                    {
+                        tag: "h2",
+                        text: "Pozostało 13:28"
+                    },
+                    {
+                        tag: "div",
+                        class: "ProgressBar",
+                        children: [
+                            {
+                                tag: "div",
+                                style: "width: 45%;"
+                            }
+                        ]
+                    },
+                    {
+                        tag: "button",
+                        disabled: true,
+                        text: "Start"
+                    },
+                    {
+                        tag: "button",
+                        text: "Stop"
+                    },
+                    {
+                        tag: "button",
+                        text: "Pauzuj"
+                    }
+                ]
+            }
+        ]
+    }
+]
+
+generateTree(rootElement, rootChildren);
+</script>
+</html>

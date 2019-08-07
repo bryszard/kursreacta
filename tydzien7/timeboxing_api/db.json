@@ -1,0 +1,24 @@
+{
+  "timeboxes": [
+    {
+      "id": 1,
+      "title": "Uczę się 1",
+      "totalTimeInMinutes": "25"
+    },
+    {
+      "id": 2,
+      "title": "Uczę się 2",
+      "totalTimeInMinutes": "4"
+    },
+    {
+      "id": 3,
+      "title": "Uczę się 3",
+      "totalTimeInMinutes": "120"
+    },
+    {
+      "id": 4,
+      "title": "Słucham kursu reacta",
+      "totalTimeInMinutes": "15"
+    }
+  ]
+}

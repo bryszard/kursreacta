@@ -1,0 +1,17 @@
+.inactive {
+    filter: blur(2px) grayscale(1);
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.Input--inline {
+    margin: 0 5px;
+    min-width: 0;
+}
+
+.InlineEditor {
+    display: inline;
+    margin-left: 10px;
+}

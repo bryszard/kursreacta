@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "email": "michal@kursreacta.pl",
+      "password": "$2a$10$bHSWPI5ke02BStAUHXgi4ec88fs1S299qHL8iRACJGsP54pgczjqS",
+      "id": 1
+    },
+    {
+      "email": "bob@example.com",
+      "password": "$2a$10$8UzZYd/gn2T.3vgFwZNdlOoG90m1/j1u55nTilAQTrbNp1gGhQPsK",
+      "id": 2
+    }
+  ],
+  "timeboxes": [
+    {
+      "title": "Poznaję Context",
+      "totalTimeInMinutes": 20,
+      "id": 8
+    },
+    {
+      "title": "Updated timebox",
+      "totalTimeInMinutes": "5",
+      "id": 10
+    },
+    {
+      "title": "afadgsdg",
+      "totalTimeInMinutes": "15",
+      "id": 11
+    }
+  ]
+}
