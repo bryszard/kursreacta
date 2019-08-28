@@ -13,19 +13,19 @@
   ],
   "timeboxes": [
     {
-      "title": "Sprawdzam module loadin",
-      "totalTimeInMinutes": "5",
-      "id": 12
-    },
-    {
       "title": "Updated timebox",
       "totalTimeInMinutes": "10",
       "id": 13
     },
     {
-      "title": "Testuję",
+      "title": "Updated timebox",
       "totalTimeInMinutes": "2",
       "id": 14
+    },
+    {
+      "title": "Myślę ergo sum",
+      "totalTimeInMinutes": "1",
+      "id": 15
     }
   ]
 }
