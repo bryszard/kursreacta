@@ -16,7 +16,7 @@ const TimeboxList = () => {
       .then(timeboxes => setTimeboxes(timeboxes))
       .catch(error => setError(error))
       .finally(() => setLoading(false));
-  });
+  }, []);
 
   const addTimebox = timebox => {
     TimeboxesAPI.addTimebox(timebox, accessToken).then(addedTimebox =>
