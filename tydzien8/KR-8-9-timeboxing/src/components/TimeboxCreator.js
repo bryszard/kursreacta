@@ -1,43 +1,34 @@
-import React from "react";
+import React, { useRef } from "react";
 
-class TimeboxCreator extends React.Component {
-    constructor(props) {
-        super(props);
-        this.titleInput = React.createRef();
-        this.totalTimeInMinutesInput = React.createRef();
-    }
-    handleSubmit = (event) => {
-        event.preventDefault(); 
-        this.props.onCreate({ 
-            title: this.titleInput.current.value, 
-            totalTimeInMinutes: this.totalTimeInMinutesInput.current.value
-        });
-        this.titleInput.current.value = "";
-        this.totalTimeInMinutesInput.current.value = "";
-    }
+function TimeboxCreator({ onCreate }) {
+  const titleInput = useRef();
+  const totalTimeInMinutesInput = useRef();
 
-    render() {
-        return (
-            <form onSubmit={this.handleSubmit} className="TimeboxCreator">
-                <label>
-                    Co robisz?
-                    <input 
-                        ref={this.titleInput}
-                        type="text" 
-                    />
-                </label><br/>
-                <label>
-                    Ile minut?
-                    <input 
-                        ref={this.totalTimeInMinutesInput}
-                        type="number" 
-                    />
-                </label><br />
-                <button 
-                >Dodaj timebox</button>
-            </form>
-        )
-    }
+  function handleSubmit(event) {
+    event.preventDefault();
+    onCreate({
+      title: titleInput.current.value,
+      totalTimeInMinutes: totalTimeInMinutesInput.current.value
+    });
+    titleInput.current.value = "";
+    totalTimeInMinutesInput.current.value = "";
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="TimeboxCreator">
+      <label>
+        Co robisz?
+        <input ref={titleInput} type="text" />
+      </label>
+      <br />
+      <label>
+        Ile minut?
+        <input ref={totalTimeInMinutesInput} type="number" />
+      </label>
+      <br />
+      <button>Dodaj timebox</button>
+    </form>
+  );
 }
 
 export default TimeboxCreator;
