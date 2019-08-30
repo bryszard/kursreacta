@@ -1,98 +1,105 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Clock from "./Clock";
 import ProgressBar from "./ProgressBar";
 import { getMinutesAndSecondsFromDurationInSeconds } from "../lib/time";
 
-class CurrentTimebox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isRunning: false,
-            isPaused: false,
-            pausesCount: 0,
-            elapsedTimeInSeconds: 0
-        }
-        this.handleStart = this.handleStart.bind(this)
-        this.handleStop = this.handleStop.bind(this)
-        this.togglePause = this.togglePause.bind(this)
-        this.intervalId = null;
+function CurrentTimebox({ title, totalTimeInMinutes, isEditable, onEdit }) {
+  const [isPaused, setIsPaused] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+  const [pausesCount, setPausesCount] = useState(0);
+  const [elapsedTimeInSeconds, setElapsedTimeInSeconds] = useState(0);
+  const intervalId = useRef();
+  const minutesLeft = useRef();
+  const secondsLeft = useRef();
+  const progressInPercent = useRef();
+
+  useEffect(() => {
+    const totalTimeInSeconds = totalTimeInMinutes * 60;
+    const timeLeftInSeconds = totalTimeInSeconds - elapsedTimeInSeconds;
+    [
+      minutesLeft.current,
+      secondsLeft.current
+    ] = getMinutesAndSecondsFromDurationInSeconds(timeLeftInSeconds);
+    progressInPercent.current =
+      (elapsedTimeInSeconds / totalTimeInSeconds) * 100.0;
+
+    return () => stopTimer();
+  }, [elapsedTimeInSeconds]);
+
+  function handleStart() {
+    setIsRunning(true);
+
+    startTimer();
+  }
+  function handleStop(event) {
+    setIsRunning(false);
+    setIsPaused(false);
+    setPausesCount(0);
+    setElapsedTimeInSeconds(0);
+
+    stopTimer();
+  }
+  function startTimer() {
+    if (intervalId === null) {
+      intervalId.current = window.setInterval(() => {
+        setElapsedTimeInSeconds(
+          prevElapsedTimeInSeconds => prevElapsedTimeInSeconds + 0.1
+        );
+      }, 100);
     }
-    
-    componentWillUnmount() {
-        this.stopTimer();
-    }
-    handleStart(event) {
-        this.setState({
-            isRunning: true
-        })
-        this.startTimer();
-    }
-    handleStop(event) { 
-        this.setState({
-            isRunning: false,
-            isPaused: false,
-            pausesCount: 0,
-            elapsedTimeInSeconds: 0
-        })
-        this.stopTimer();
-    }
-    startTimer() {
-        if (this.intervalId === null) {
-            this.intervalId = window.setInterval(
-                () => {
-                    this.setState(
-                        prevState => ({ elapsedTimeInSeconds: prevState.elapsedTimeInSeconds + 0.1 })
-                    )
-                },
-                100
-            );
-        }
-    }
-    stopTimer() {
-        window.clearInterval(this.intervalId);
-        this.intervalId = null;
-    }
-    togglePause() {
-        this.setState(
-            function(prevState) {
-                const isPaused = !prevState.isPaused;
-                if (isPaused) {
-                    this.stopTimer();
-                } else {
-                    this.startTimer();
-                }
-                return {
-                    isPaused,
-                    pausesCount: isPaused ? prevState.pausesCount + 1 : prevState.pausesCount
-                }
-            }
-        )
-    }
-    render() {
-        const { isPaused, isRunning, pausesCount, elapsedTimeInSeconds } = this.state;
-        const { title, totalTimeInMinutes, isEditable, onEdit } = this.props;
-        const totalTimeInSeconds = totalTimeInMinutes * 60;
-        const timeLeftInSeconds = totalTimeInSeconds - elapsedTimeInSeconds;
-        const [minutesLeft, secondsLeft] = getMinutesAndSecondsFromDurationInSeconds(timeLeftInSeconds)
-        const progressInPercent = (elapsedTimeInSeconds / totalTimeInSeconds) * 100.0;
-        return (
-            <div className={`CurrentTimebox ${isEditable ? "inactive" : ""}`}>
-                <h1>{title}</h1>
-                <Clock minutes={minutesLeft} seconds={secondsLeft} className={isPaused ? "inactive" : ""}/>
-                <ProgressBar 
-                    percent={progressInPercent} 
-                    className={isPaused ? "inactive" : ""}
-                    color="red"
-                    big
-                />
-                <button onClick={onEdit} disabled={isEditable}>Edytuj</button>
-                <button onClick={this.handleStart} disabled={isRunning}>Start</button>
-                <button onClick={this.handleStop} disabled={!isRunning}>Stop</button>
-                <button onClick={this.togglePause} disabled={!isRunning}>{isPaused ? "Wznów" : "Pauzuj"}</button>
-                Liczba przerw: {pausesCount}
-            </div>
-        )
-    }
+  }
+  function stopTimer() {
+    window.clearInterval(intervalId);
+    intervalId.current = null;
+  }
+  function togglePause() {
+    let newIsPaused;
+
+    setIsPaused(prevIsPaused => {
+      newIsPaused = !prevIsPaused;
+
+      if (newIsPaused) {
+        stopTimer();
+      } else {
+        startTimer();
+      }
+
+      return newIsPaused;
+    });
+    setPausesCount(prevPausesCount =>
+      newIsPaused ? prevPausesCount + 1 : prevPausesCount
+    );
+  }
+
+  return (
+    <div className={`CurrentTimebox ${isEditable ? "inactive" : ""}`}>
+      <h1>{title}</h1>
+      <Clock
+        minutes={minutesLeft.current}
+        seconds={secondsLeft.current}
+        className={isPaused ? "inactive" : ""}
+      />
+      <ProgressBar
+        percent={progressInPercent.current}
+        className={isPaused ? "inactive" : ""}
+        color="red"
+        big
+      />
+      <button onClick={onEdit} disabled={isEditable}>
+        Edytuj
+      </button>
+      <button onClick={handleStart} disabled={isRunning}>
+        Start
+      </button>
+      <button onClick={handleStop} disabled={!isRunning}>
+        Stop
+      </button>
+      <button onClick={togglePause} disabled={!isRunning}>
+        {isPaused ? "Wznów" : "Pauzuj"}
+      </button>
+      Liczba przerw: {pausesCount}
+    </div>
+  );
 }
 
 export default CurrentTimebox;
