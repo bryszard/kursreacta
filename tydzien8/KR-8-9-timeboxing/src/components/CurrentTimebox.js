@@ -9,28 +9,26 @@ function CurrentTimebox({ title, totalTimeInMinutes, isEditable, onEdit }) {
   const [pausesCount, setPausesCount] = useState(0);
   const [elapsedTimeInSeconds, setElapsedTimeInSeconds] = useState(0);
   const intervalId = useRef();
-  const minutesLeft = useRef();
-  const secondsLeft = useRef();
-  const progressInPercent = useRef();
+
+  const totalTimeInSeconds = totalTimeInMinutes * 60;
+  const timeLeftInSeconds = totalTimeInSeconds - elapsedTimeInSeconds;
+  const progressInPercent = (elapsedTimeInSeconds / totalTimeInSeconds) * 100.0;
+
+  let minutesLeft, secondsLeft;
+  [minutesLeft, secondsLeft] = getMinutesAndSecondsFromDurationInSeconds(
+    timeLeftInSeconds
+  );
 
   useEffect(() => {
-    const totalTimeInSeconds = totalTimeInMinutes * 60;
-    const timeLeftInSeconds = totalTimeInSeconds - elapsedTimeInSeconds;
-    [
-      minutesLeft.current,
-      secondsLeft.current
-    ] = getMinutesAndSecondsFromDurationInSeconds(timeLeftInSeconds);
-    progressInPercent.current =
-      (elapsedTimeInSeconds / totalTimeInSeconds) * 100.0;
-
     return () => stopTimer();
-  }, [elapsedTimeInSeconds]);
+  }, []);
 
   function handleStart() {
     setIsRunning(true);
-
+    console.log("handleStart");
     startTimer();
   }
+
   function handleStop(event) {
     setIsRunning(false);
     setIsPaused(false);
@@ -39,8 +37,9 @@ function CurrentTimebox({ title, totalTimeInMinutes, isEditable, onEdit }) {
 
     stopTimer();
   }
+
   function startTimer() {
-    if (intervalId === null) {
+    if (!intervalId.current) {
       intervalId.current = window.setInterval(() => {
         setElapsedTimeInSeconds(
           prevElapsedTimeInSeconds => prevElapsedTimeInSeconds + 0.1
@@ -48,10 +47,12 @@ function CurrentTimebox({ title, totalTimeInMinutes, isEditable, onEdit }) {
       }, 100);
     }
   }
+
   function stopTimer() {
-    window.clearInterval(intervalId);
+    window.clearInterval(intervalId.current);
     intervalId.current = null;
   }
+
   function togglePause() {
     let newIsPaused;
 
@@ -75,12 +76,12 @@ function CurrentTimebox({ title, totalTimeInMinutes, isEditable, onEdit }) {
     <div className={`CurrentTimebox ${isEditable ? "inactive" : ""}`}>
       <h1>{title}</h1>
       <Clock
-        minutes={minutesLeft.current}
-        seconds={secondsLeft.current}
+        minutes={minutesLeft}
+        seconds={secondsLeft}
         className={isPaused ? "inactive" : ""}
       />
       <ProgressBar
-        percent={progressInPercent.current}
+        percent={progressInPercent}
         className={isPaused ? "inactive" : ""}
         color="red"
         big
